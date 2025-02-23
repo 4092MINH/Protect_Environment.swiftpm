@@ -6,6 +6,7 @@ struct EcoTourismProctectionView: View {
     @State private var questions: [Question]
     @State private var currentQuestionIndex = 0
     @State private var showingResult = false
+    //@State private var numQuestionCorrect = 0
 
     init() {
         // Randomly select 3 questions
@@ -30,6 +31,7 @@ struct EcoTourismProctectionView: View {
                 .ignoresSafeArea()
             
             VStack(spacing: 20) {
+                //Text("Score: \(numQuestionCorrect)")
                 if currentQuestionIndex < questions.count {
                     Text(questions[currentQuestionIndex].question) // Display current question
                         .font(.title2)
@@ -54,15 +56,20 @@ struct EcoTourismProctectionView: View {
                         }
                         .disabled(selectedAnswer != nil)
                     }
-
+                    
                     if let isCorrect = isCorrect {
-                        Text(isCorrect ? "Chính xác!" : "Sai rồi!")
+                        Text(isCorrect ? "Correct!" : "Wrong!")
                             .font(.title)
                             .fontWeight(.bold)
                             .foregroundColor(isCorrect ? .green : .red)
                             .padding(.top)
-                        
+                        /*
+                        if isCorrect{
+                            numQuestionCorrect += 1
+                        }
+                        */
                         Button("Next Question") {
+                            self.isCorrect = nil
                             selectedAnswer = nil
                             currentQuestionIndex += 1
                             if currentQuestionIndex >= questions.count {

@@ -8,6 +8,11 @@ class TrashCollectionGameScene: SKScene {
             labelScore.text = "Score: \(score)"
         }
     }
+    
+    private var hasWon = false
+    
+    var onFinished: () -> Void = {}
+    
     private var labelScore = SKLabelNode(fontNamed: "Chalkduster")
     
     private var playButton: SKLabelNode = {
@@ -53,29 +58,48 @@ class TrashCollectionGameScene: SKScene {
         let touchedNode = nodes(at: location)
         for node in touchedNode {
             if node.name == "play" {
+                if hasWon {
+                    onFinished()
+                    node.removeFromParent()
+                    return
+                }
                 node.removeFromParent()
+                clearTrash()
                 startGame()
             }
         }
     }
-    
-    func startGame() {
+    private func clearTrash(){
+        for node in self.children {
+            if node.name == "trash" {
+                node.removeFromParent()
+            }
+        }
+    }
+    private func startGame() {
         score = 0
         Task{
             for _ in 1...30 {
-                if score == 10 {
-                    labelScore.text = "You win!"
-                    return
-                }
                 let nametrash = trashesImg.randomElement()!
                 let trash = SKSpriteNode(imageNamed: "trash/\(nametrash)-trash")
-                trash.size = CGSize(width: 30, height: 30)
+                trash.size = CGSize(width: 90, height: 90)
                 trash.position = CGPoint(x: CGFloat.random(in: 0...frame.width), y: frame.height - 100)
                 trash.physicsBody = SKPhysicsBody(circleOfRadius: 10)
                 trash.name = "trash"
                 addChild(trash)
-                try await Task.sleep(for: .seconds(0.5))
+                try await Task.sleep(for: .seconds(1))
             }
+            considerToWin()
+        }
+    }
+    private func considerToWin(){
+        if score >= 20 {
+            labelScore.text = "You win!"
+            playButton.text = "Return"
+            hasWon = true
+            addChild(playButton)
+            return
+        } else{
             labelScore.text = "You lose!"
             playButton.text = "Play again"
             addChild(playButton)
@@ -88,15 +112,45 @@ class TrashCollectionGameScene: SKScene {
 struct SaveTheOceanView: View {
     var scene: SKScene {
         let scene = TrashCollectionGameScene()
+        scene.onFinished = onFinished
         scene.size = CGSize(width: 400, height: 750)
         scene.scaleMode = .fill
         return scene
     }
+    
+    @State private var currentScene = 0
+    @State private var script = [
+        "Welcome to Ha Long Bay",
+        "In Ha Long Bay, there are many trashes in the sea",
+        "Help Minh to collect the trashes by tapping on them",
+        "Let's start!"
+    ]
+    
+    @Environment(\.presentationMode) var presentationMode: Binding<PresentationMode>
+
+    
+    func onFinished() {
+        presentationMode.wrappedValue.dismiss()
+    }
 
     var body: some View {
-        //IntroView()
-        SpriteView(scene: scene)
-            .frame(width: 400, height: 750)
-            .ignoresSafeArea()
+        if currentScene < script.count {
+            ZStack {
+                VStack {
+                    Spacer()
+                    Text(script[currentScene])
+                        .font(.headline).padding()
+                    Spacer()
+                    Image("minh").resizable().scaledToFit().padding()
+                }.onTapGesture {
+                    currentScene += 1
+                }
+            }
+        } else {
+            SpriteView(scene: scene)
+                .frame(width: 400, height: 750)
+                .ignoresSafeArea()
+                .navigationBarBackButtonHidden()
+        }
     }
 }
