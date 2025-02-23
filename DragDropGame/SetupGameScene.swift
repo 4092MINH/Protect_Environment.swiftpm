@@ -1,72 +1,11 @@
+//
+//  File.swift
+//  
+//
+//  Created by Phan Nguyễn Khánh Minh on 23/2/25.
+//
 import SwiftUI
 import SpriteKit
-
-struct DragDropView: View {
-    var scene: DragDropGameScene {
-        let scene = DragDropGameScene()
-        scene.size = CGSize(width: 500, height: 1000)
-        scene.scaleMode = .fill
-        return scene
-    }
-    
-    var body: some View {
-        SpriteView(scene: scene)
-            .frame(width: 500, height: 1000)
-            .edgesIgnoringSafeArea(.all)
-    }
-}
-
-class DragDropGameScene: SKScene {
-    private var selectedNode: SKSpriteNode?
-    private var pairConnect: (a: SKNode?, q: SKNode?) = (nil, nil)
-    
-    
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent?) {
-        guard let touch = touches.first else{return}
-        let location = touch.location(in: self)
-        let touchedNode = atPoint(location)
-        if let spriteNode = touchedNode as? SKSpriteNode{
-            if selectedNode != nil{
-                selectedNode?.color = selectedNode!.name!.contains("A") ? .green: .blue
-            }
-            selectedNode = spriteNode
-            selectedNode?.color = .red
-            //addChild(label)
-            //showSpeechBubble(for: selectedNode!, text: FindText(pairChosen: selectedNode))
-            if spriteNode.name!.contains("A"){
-                pairConnect.a = selectedNode
-            }
-            if spriteNode.name!.contains("Q"){
-                pairConnect.q = selectedNode
-            }
-            if (pairConnect.a?.name != nil && pairConnect.q?.name != nil){
-                if (pairConnect.a!.name!.first == pairConnect.q!.name!.first &&
-                    pairConnect.a!.name!.last == pairConnect.q!.name!.last){
-                    //print(pairConnect.a!.name!, pairConnect.q!.name!)
-                    let line = createLine(from: pairConnect.a!, to: pairConnect.q!)
-                    addChild(line)
-                }
-            }
-        }
-    }
-    
-    private func createLine(from nodeFrom: SKNode, to nodeTo: SKNode) -> SKShapeNode{
-        let fromPoint = nodeFrom.position
-        let toPoint = nodeTo.position
-        
-        // Tạo một đường thẳng từ nodeFrom đến nodeTo
-        let path = CGMutablePath()
-        path.move(to: fromPoint)
-        path.addLine(to: toPoint)
-        
-        // Tạo SKShapeNode từ đường thẳng
-        let line = SKShapeNode(path: path)
-        line.strokeColor = .black // Màu của đường thẳng
-        line.lineWidth = 2.0 // Độ dày của đường thẳng
-        
-        return line
-    }
-}
 extension DragDropGameScene{//MARK: Setup Scene
     private func makeOilRig(coe_x: Double, coe_y: Double, name nameOilRig: String) -> SKSpriteNode{
         let oilRig = SKSpriteNode(imageNamed: "oil-rig")
@@ -76,37 +15,47 @@ extension DragDropGameScene{//MARK: Setup Scene
         return oilRig
     }
     override func didMove(to view: SKView) {
+        let background = SKSpriteNode(imageNamed: "just-ocean")
+        background.size = CGSize(width: self.size.width * 2, height: self.size.height)
+        background.position = CGPoint(x: self.size.width/2, y: self.size.height/2) // Đặt vị trí ở giữa scene
+        background.zPosition = -1 // Đảm bảo background ở phía sau các node khác
+        addChild(background)
+        background.name = "ocean"
         backgroundColor = .white
         
-        let cityGovernment = makeOilRig(coe_x: 0.25, coe_y: 0.85, name: "1Q1")
+        randomPair.shuffle()
+        let cityGovernment = makeOilRig(coe_x: 0.25, coe_y: 0.85, name: "1Q\(randomPair[0])")
         addChild(cityGovernment)
         makeWrapText(x: Int(scene!.size.width - 163), y: 737, string: findText(pairChosen: cityGovernment))
         
-        let industrialCorporations = makeOilRig(coe_x: 0.75, coe_y: 0.85, name: "1Q2")
+        let industrialCorporations = makeOilRig(coe_x: 0.75, coe_y: 0.85, name: "1Q\(randomPair[1])")
         addChild(industrialCorporations)
         makeWrapText(x: 87, y: 737, string: findText(pairChosen: industrialCorporations))
         
-        let vietnameseMedia = makeOilRig(coe_x: 0.25, coe_y: 0.55, name: "1A1")
+        randomPair.shuffle()
+        let vietnameseMedia = makeOilRig(coe_x: 0.25, coe_y: 0.55, name: "1A\(randomPair[0])")
         addChild(vietnameseMedia)
         makeWrapText(x: 87, y: 600, string: findText(pairChosen: vietnameseMedia))
         
-        let localResidents = makeOilRig(coe_x: 0.75, coe_y: 0.55, name: "1A2")
+        let localResidents = makeOilRig(coe_x: 0.75, coe_y: 0.55, name: "1A\(randomPair[1])")
         addChild(localResidents)
         makeWrapText(x: Int(scene!.size.width - 163), y: 600, string: findText(pairChosen: localResidents))
         
-        let enforceLaws = makeOilRig(coe_x: 0.25, coe_y: 0.45, name: "2A1")
+        randomPair.shuffle()
+        let enforceLaws = makeOilRig(coe_x: 0.25, coe_y: 0.45, name: "2A\(randomPair[0])")
         addChild(enforceLaws)
         makeWrapText(x: Int(scene!.size.width - 163), y: 337, string: findText(pairChosen: enforceLaws))
         
-        let investEcoFriendly = makeOilRig(coe_x: 0.75, coe_y: 0.45, name: "2A2")
+        let investEcoFriendly = makeOilRig(coe_x: 0.75, coe_y: 0.45, name: "2A\(randomPair[1])")
         addChild(investEcoFriendly)
         makeWrapText(x: 87, y: 337, string: findText(pairChosen: investEcoFriendly))
         
-        let raiseAwareness = makeOilRig(coe_x: 0.25, coe_y: 0.15, name: "2Q1")
+        randomPair.shuffle()
+        let raiseAwareness = makeOilRig(coe_x: 0.25, coe_y: 0.15, name: "2Q\(randomPair[0])")
         addChild(raiseAwareness)
         makeWrapText(x: Int(scene!.size.width - 163), y: 200, string: findText(pairChosen: raiseAwareness))
         
-        let organizeProtests = makeOilRig(coe_x: 0.75, coe_y: 0.15, name: "2Q2")
+        let organizeProtests = makeOilRig(coe_x: 0.75, coe_y: 0.15, name: "2Q\(randomPair[1])")
         addChild(organizeProtests)
         makeWrapText(x: 87, y: 200, string: findText(pairChosen: organizeProtests))
     }
@@ -169,9 +118,8 @@ extension DragDropGameScene{//MARK: Them wrap text de bai vao trong Scene
         }
     }
 }
-struct DragDropPreview: PreviewProvider {
+struct DragDropPreview2: PreviewProvider {
     static var previews: some View {
         DragDropView()
     }
 }
-

@@ -1,12 +1,13 @@
 import SwiftUI
 
-struct EcoTourismProctectionView: View {
+struct EcoTourismProctectionQuizView: View {
     @State private var selectedAnswer: Int?
     @State private var isCorrect: Bool?
     @State private var questions: [Question]
     @State private var currentQuestionIndex = 0
     @State private var showingResult = false
-    //@State private var numQuestionCorrect = 0
+    @State private var numQuestionCorrect = 0
+    @EnvironmentObject var wonData: WonGameObservant
 
     init() {
         // Randomly select 3 questions
@@ -63,11 +64,6 @@ struct EcoTourismProctectionView: View {
                             .fontWeight(.bold)
                             .foregroundColor(isCorrect ? .green : .red)
                             .padding(.top)
-                        /*
-                        if isCorrect{
-                            numQuestionCorrect += 1
-                        }
-                        */
                         Button("Next Question") {
                             self.isCorrect = nil
                             selectedAnswer = nil
@@ -75,11 +71,13 @@ struct EcoTourismProctectionView: View {
                             if currentQuestionIndex >= questions.count {
                                 showingResult = true
                             }
+                            if isCorrect {
+                                numQuestionCorrect += 1
+                            }
                         }
                         .padding(.top)
                         .disabled(selectedAnswer == nil)
                     }
-
                 } else {
                     Text("The game end") // Display when all questions are answered
                         .font(.largeTitle)
@@ -88,8 +86,12 @@ struct EcoTourismProctectionView: View {
                 }
             }
             .padding(30)
-            .alert("Game Over", isPresented: $showingResult) {
-                Button("OK", role: .cancel) { }
+            .alert("Game Over\n Your score is \(numQuestionCorrect)", isPresented: $showingResult) {
+                Button("OK", role: .cancel) {
+                    if numQuestionCorrect == 3 {
+                        wonData.wonGame2 = true
+                    }
+                }
             } message: {
                 Text("You have completed the quiz!")
             }
@@ -115,5 +117,37 @@ struct EcoTourismProctectionView: View {
         } else {
              return Color(red: 0.2, green: 0.6, blue: 1.0)
         }
+    }
+}
+struct EcoTourismProctectionView: View {
+    @State private var script = [
+        "Welcome to Sapa",
+        "In Sapa, you will see some question about the environment",
+        "Help Minh to all the question",
+        "You have to answer 3 question correctly to get the key",
+        "Let's start!"
+    ]
+    @State private var currentScene = 0
+    var body: some View {
+        if currentScene < script.count {
+            ZStack {
+                VStack {
+                    Spacer()
+                    Text(script[currentScene])
+                        .font(.headline).padding()
+                    Spacer()
+                    Image("minh").resizable().scaledToFit().padding()
+                }.onTapGesture {
+                    currentScene += 1
+                }
+            }
+        } else {
+            EcoTourismProctectionQuizView()
+        }
+    }
+}
+struct previewQuiz: PreviewProvider {
+    static var previews: some View {
+        EcoTourismProctectionView()
     }
 }

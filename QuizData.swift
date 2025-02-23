@@ -10,6 +10,7 @@ struct Answer: Equatable{
     var answer: String
     var isCorrect: Bool = false
 }
+
 struct Question {
     var question: String
     var answer: [Answer]
@@ -106,28 +107,4 @@ let questionBookletForQuiz = [
             Answer(answer: "It prevents the animals from hunting on their own"),
         ]
     )
-]
-var randomPair = ["1", "2"]
-var frameStakeHolder =
-[
-    [
-        "City government",
-        "Industrial corporations & factories"
-    ],
-    [
-        "Vietnamese Media & environmental journalists",
-        "Local residents & environmental activists"
-    ]
-]
-var frameResponsibility =
-[
-    [
-        "Enforce environmental laws & regulations",
-        "Invest in eco-friendly production & waste management"
-
-    ],
-    [
-        "Raise awareness through news & investigative reporting",
-        "Organize protests, report violations, and join clean-up campaigns"
-    ]
 ]
