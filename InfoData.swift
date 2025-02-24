@@ -6,6 +6,10 @@
 //
 
 import Foundation
+var wonGame1 = false
+var wonGame2 = false
+var wonGame3 = false
+var secretEnding = false
 var infoPlace: [String] = [
     "",
     "Plastic waste, sewage, noise, and over-tourism are polluting Ha Long Bay. Its diverse marine ecosystem, natural beauty, and the tourism industry are negatively impacted. Environmental protection efforts are underway, but stronger action is needed. The future of this World Heritage Site depends on it.",

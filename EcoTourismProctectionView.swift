@@ -7,7 +7,6 @@ struct EcoTourismProctectionQuizView: View {
     @State private var currentQuestionIndex = 0
     @State private var showingResult = false
     @State private var numQuestionCorrect = 0
-    @EnvironmentObject var wonData: WonGameObservant
 
     init() {
         // Randomly select 3 questions
@@ -89,7 +88,7 @@ struct EcoTourismProctectionQuizView: View {
             .alert("Game Over\n Your score is \(numQuestionCorrect)", isPresented: $showingResult) {
                 Button("OK", role: .cancel) {
                     if numQuestionCorrect == 3 {
-                        wonData.wonGame2 = true
+                        wonGame2 = true
                     }
                 }
             } message: {

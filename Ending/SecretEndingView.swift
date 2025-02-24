@@ -35,9 +35,7 @@ struct SecretEndingView: View {
     }
 }
 struct SecretEndingPreview: PreviewProvider {
-    static let wonData = WonGameObservant()
     static var previews: some View {
         SecretEndingView()
-            .environmentObject(wonData)
     }
 }

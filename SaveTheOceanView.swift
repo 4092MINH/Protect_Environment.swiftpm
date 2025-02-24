@@ -2,7 +2,6 @@ import SwiftUI
 import SpriteKit
 
 class TrashCollectionGameScene: SKScene {
-    var isPerfect = false
     private var trashesImg = ["apple","banana","fish","bottle"]
     private var score = 0 {
         didSet {
@@ -94,9 +93,9 @@ class TrashCollectionGameScene: SKScene {
     }
     private func considerToWin(){
         if score >= 20 {
-            labelScore.text = score == 30 ? "You win!" : "Perfect!"
+            labelScore.text = score == 30 ? "Perfect" : "You win!"
             playButton.text = "Return"
-            if score == 30 {isPerfect = true}
+            if score == 30 {secretEnding = true}
             hasWon = true
             addChild(playButton)
             return
@@ -112,13 +111,11 @@ class TrashCollectionGameScene: SKScene {
 // A sample SwiftUI creating a GameScene and sizing it
 // at 300x400 points
 struct SaveTheOceanView: View {
-    @EnvironmentObject var wonData: WonGameObservant
     var scene: SKScene {
         let scene = TrashCollectionGameScene()
         scene.onFinished = onFinished
         scene.size = CGSize(width: 400, height: 750)
         scene.scaleMode = .fill
-        wonData.secretEnding = scene.isPerfect
         return scene
     }
     
@@ -134,7 +131,7 @@ struct SaveTheOceanView: View {
 
     
     func onFinished() {
-        wonData.wonGame1 = true
+        wonGame1 = true
         presentationMode.wrappedValue.dismiss()
     }
 
@@ -157,12 +154,10 @@ struct SaveTheOceanView: View {
                 .ignoresSafeArea()
                 .navigationBarBackButtonHidden()
         }
-    }
+        }
 }
 struct SaveTheOceanPreview: PreviewProvider {
-    static let wonData = WonGameObservant()
     static var previews: some View {
         SaveTheOceanView()
-            .environmentObject(wonData)
     }
 }

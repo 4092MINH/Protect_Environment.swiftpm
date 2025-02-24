@@ -38,7 +38,6 @@ struct NormalEndingView: View {
     }
 }
 struct EndNormalPreview: PreviewProvider {
-    static let wonData = WonGameObservant()
     static var previews: some View {
         NormalEndingView()
     }

@@ -1,14 +1,8 @@
 import SwiftUI
 
-class WonGameObservant: ObservableObject{
-    @Published var wonGame1 = false // MARK: Debug
-    @Published var wonGame2 = false
-    @Published var wonGame3 = false
-    @Published var secretEnding = false
-}
+
 struct ContentView: View {
     @State private var showMinigames = false
-    @StateObject var wonData = WonGameObservant()
     var body: some View {
         if showMinigames {
             MinigamesView()
@@ -20,7 +14,6 @@ struct ContentView: View {
 
 struct MinigamesView: View {
     @State private var showInfo: Int = 0
-    @StateObject var wonData = WonGameObservant()
     var body: some View {
         ZStack {
             VStack{
@@ -31,10 +24,9 @@ struct MinigamesView: View {
                         Spacer()
                         HStack {
                             VStack {
-                                if !wonData.wonGame1{
+                                if !wonGame1{
                                     NavigationLink { // UINavigationController.push
                                         SaveTheOceanView()
-                                            .environmentObject(wonData)
                                     } label: {
                                         VStack {
                                             Rectangle()
@@ -71,10 +63,9 @@ struct MinigamesView: View {
                                 .foregroundColor(.black)
                             }
                             VStack {
-                                if !wonData.wonGame2{
+                                if !wonGame2{
                                     NavigationLink {
                                         EcoTourismProctectionView()
-                                            .environmentObject(wonData)
                                     } label: {
                                         VStack {
                                             VStack {
@@ -119,10 +110,9 @@ struct MinigamesView: View {
                             }
                         }.padding(.bottom, 0)
                         VStack {
-                            if !wonData.wonGame3{
+                            if !wonGame3{
                                 NavigationLink {
                                     DragDropView()
-                                        .environmentObject(wonData)
                                 } label: {
                                     VStack {
                                         VStack {
@@ -167,10 +157,9 @@ struct MinigamesView: View {
                         Spacer()
                     }
                 }
-                if wonData.wonGame1 == true && wonData.wonGame2 == true && wonData.wonGame3 == true {
+                if wonGame1 && wonGame2 && wonGame3 {
                     NavigationLink{
-                        @EnvironmentObject var wonData: WonGameObservant
-                        if wonData.secretEnding{
+                        if secretEnding{
                             SecretEndingView()
                         }
                         else{

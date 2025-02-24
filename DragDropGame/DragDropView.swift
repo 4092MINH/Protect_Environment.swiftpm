@@ -9,7 +9,6 @@ struct DragDropView: View {
         scene.onFinished = onFinished
         return scene
     }
-    @EnvironmentObject var wonData: WonGameObservant
     @State private var script = [
         "Welcome to Vung Tau",
         "In Vung Tau, you will 4 rig disconnected",
@@ -41,8 +40,7 @@ struct DragDropView: View {
     
     @Environment (\.presentationMode) var presentationMode: Binding<PresentationMode>
     func onFinished() {
-        wonData.wonGame3 = true
-        print(wonData.wonGame1, wonData.wonGame2, wonData.wonGame3)
+        wonGame3 = true
         presentationMode.wrappedValue.dismiss()
     }
 }
@@ -126,7 +124,6 @@ class DragDropGameScene: SKScene {
     }
 }
 struct DragDropPreview1: PreviewProvider{
-    static var wonData = WonGameObservant()
     static var previews: some View {
         DragDropView()
     }
